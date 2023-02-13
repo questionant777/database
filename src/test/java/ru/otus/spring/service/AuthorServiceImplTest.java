@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.spring.dao.AuthorDao;
+import ru.otus.spring.repository.AuthorJpa;
 import ru.otus.spring.domain.Author;
 
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class AuthorServiceImplTest {
     public static final String EXISTING_AUTHOR_NAME = "existing author name";
 
     @Mock
-    AuthorDao authorDao;
+    AuthorJpa authorDao;
 
     @InjectMocks
     AuthorServiceImpl service;
@@ -31,7 +31,7 @@ public class AuthorServiceImplTest {
     void getOrSaveByNameForExistingAuthorTest() {
         Author expectedAuthor = new Author(EXISTING_AUTHOR_ID, EXISTING_AUTHOR_NAME);
 
-        when(authorDao.getByName(EXISTING_AUTHOR_NAME))
+        when(authorDao.findByName(EXISTING_AUTHOR_NAME))
                 .thenReturn(Optional.of(expectedAuthor));
 
         Author actualAuthor = service.getOrSaveByName(EXISTING_AUTHOR_NAME);
@@ -43,7 +43,7 @@ public class AuthorServiceImplTest {
     void getOrSaveByNameSaveAndRetNotExistingAuthorTest() {
         Author newAuthor = new Author(NEW_AUTHOR_ID, NEW_AUTHOR_NAME);
 
-        when(authorDao.insert(any()))
+        when(authorDao.save(any()))
                 .thenReturn(newAuthor);
 
         Author actualAuthor = service.getOrSaveByName(NEW_AUTHOR_NAME);

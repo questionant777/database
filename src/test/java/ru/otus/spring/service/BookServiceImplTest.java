@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Genre;
+import ru.otus.spring.repository.BookJpa;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.exception.BookNotFoundException;
 
@@ -21,13 +23,20 @@ class BookServiceImplTest {
 
     public static final long NEW_BOOK_ID = 1L;
     public static final String BOOK_NAME = "any book name";
+    public static final String AUTHOR_NAME = "author book name";
+    public static final String GENRE_NAME = "genre book name";
     public static final long AUTHOR_ID = 2L;
     public static final long GENRE_ID = 3L;
     public static final long DELETE_BOOK_ID = 4L;
     public static final long EXISTING_BOOK_ID = 5L;
     public static final long NOT_EXISTING_BOOK_ID = 6L;
+
     @Mock
-    BookDao bookDao;
+    BookJpa bookJpa;
+    @Mock
+    AuthorService authorService;
+    @Mock
+    GenreService genreService;
 
     @InjectMocks
     BookServiceImpl service;
@@ -36,19 +45,22 @@ class BookServiceImplTest {
         return new Book(
                 bookId,
                 BOOK_NAME,
-                AUTHOR_ID,
-                GENRE_ID
+                new Author(AUTHOR_ID, AUTHOR_NAME),
+                new Genre(GENRE_ID, GENRE_NAME),
+                new ArrayList<>()
         );
     }
 
     @Test
-    void insertTest() {
-        when(bookDao.insert(any()))
+    void saveBookTest() {
+        when(bookJpa.save(any()))
                 .thenReturn(getAnyBook(NEW_BOOK_ID));
+        when(authorService.getOrSaveByName(AUTHOR_NAME))
+                .thenReturn(new Author(AUTHOR_ID, AUTHOR_NAME));
 
         Book newBook = getAnyBook(NEW_BOOK_ID);
 
-        Book afterInsBook = service.insert(newBook);
+        Book afterInsBook = service.save(BOOK_NAME, AUTHOR_NAME, GENRE_NAME);
 
         assertThat(afterInsBook).usingRecursiveComparison().isEqualTo(newBook);
     }
@@ -56,24 +68,24 @@ class BookServiceImplTest {
     @Test
     void deleteByIdTest() {
         service.deleteById(DELETE_BOOK_ID);
-        verify(bookDao, times(1)).deleteById(DELETE_BOOK_ID);
+        verify(bookJpa, times(1)).deleteById(DELETE_BOOK_ID);
     }
 
     @Test
     void getByIdExistingBookIdTest() {
         Book expectedBook = getAnyBook(EXISTING_BOOK_ID);
 
-        when(bookDao.getById(EXISTING_BOOK_ID))
+        when(bookJpa.findById(EXISTING_BOOK_ID))
                 .thenReturn(Optional.of(expectedBook));
 
-        Book actualBook = service.getById(EXISTING_BOOK_ID);
+        Book actualBook = service.findById(EXISTING_BOOK_ID);
 
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @Test
     void getByIdNotExistingBookIdExceptionTest() {
-        assertThatCode(() -> service.getById(NOT_EXISTING_BOOK_ID))
+        assertThatCode(() -> service.findById(NOT_EXISTING_BOOK_ID))
                 .isInstanceOf(BookNotFoundException.class);
     }
 
@@ -83,12 +95,12 @@ class BookServiceImplTest {
 
         bookList.add(getAnyBook(EXISTING_BOOK_ID));
 
-        when(bookDao.getAll())
+        when(bookJpa.findAll())
                 .thenReturn(bookList);
 
         Book expectedBook = getAnyBook(EXISTING_BOOK_ID);
 
-        List<Book> actualBookList = service.getAll();
+        List<Book> actualBookList = service.findAll();
 
         assertThat(actualBookList)
                 .usingFieldByFieldElementComparator()
