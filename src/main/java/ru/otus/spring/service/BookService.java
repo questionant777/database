@@ -5,8 +5,9 @@ import ru.otus.spring.domain.Book;
 import java.util.List;
 
 public interface BookService {
-    Book insert(Book book);
+    Book save(String bookName, String authorName, String genreName);
     void deleteById(Long bookId);
-    Book getById(Long bookId);
-    List<Book> getAll();
+    Book findById(Long bookId);
+    Book findByName(String bookName);
+    List<Book> findAll();
 }

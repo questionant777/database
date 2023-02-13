@@ -1,9 +1,11 @@
-DROP TABLE IF EXISTS author;
-CREATE TABLE author(ID BIGINT PRIMARY KEY AUTO_INCREMENT, NAME VARCHAR(255));
+drop table if exists author;
+create table author(id bigint primary key auto_increment, name varchar(255));
 
-DROP TABLE IF EXISTS genre;
-CREATE TABLE genre(ID BIGINT PRIMARY KEY AUTO_INCREMENT, NAME VARCHAR(255));
+drop table if exists genre;
+create table genre(id bigint primary key auto_increment, name varchar(255));
 
-DROP TABLE IF EXISTS book;
-CREATE TABLE book(ID BIGINT PRIMARY KEY AUTO_INCREMENT, NAME VARCHAR(255), AUTHORID BIGINT, GENREID BIGINT);
+drop table if exists book;
+create table book(id bigint primary key auto_increment, name varchar(255), authorid bigint, genreid bigint);
 
+drop table if exists bookcomment;
+create table bookcomment(id bigint primary key auto_increment, comment varchar(255), bookid bigint);

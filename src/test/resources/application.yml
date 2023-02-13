@@ -2,9 +2,17 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb
     initialization-mode: always
-    data: data.sql
   profiles:
     active: test
   shell:
     interactive:
       enabled: false
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+logging:
+  level:
+    ROOT: ERROR

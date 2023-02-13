@@ -1,30 +1,11 @@
 package ru.otus.spring.service;
 
-import org.springframework.stereotype.Service;
+public interface HandleInOut {
+    void resetSystemIn();
 
-import java.util.Scanner;
+    String in();
 
-@Service
-public class HandleInOut {
-    private Scanner scanner;
+    void out(String s);
 
-    public HandleInOut() {
-        resetSystemIn();
-    }
-
-    public void resetSystemIn() {
-        this.scanner = new Scanner(System.in);
-    }
-
-    public String in() {
-        return this.scanner.nextLine().trim();
-    }
-
-    public void out(String s){
-        System.out.print(s);
-    }
-
-    public void outAndCr(String s){
-        System.out.println(s);
-    }
+    void outAndCr(String s);
 }
