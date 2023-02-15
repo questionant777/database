@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
 import ru.otus.spring.exception.BookCommentNotFoundException;
-import ru.otus.spring.repository.BookCommentJpa;
+import ru.otus.spring.repository.BookCommentRepository;
+import ru.otus.spring.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class BookCommentServiceImplTest {
 
     @Mock
-    BookCommentJpa bookCommentJpa;
+    BookCommentRepository bookCommentJpa;
     @Mock
     BookService bookService;
     @InjectMocks

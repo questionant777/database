@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.spring.repository.AuthorJpa;
+import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.domain.Author;
 
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class AuthorServiceImplTest {
     public static final String EXISTING_AUTHOR_NAME = "existing author name";
 
     @Mock
-    AuthorJpa authorDao;
+    AuthorRepository authorDao;
 
     @InjectMocks
     AuthorServiceImpl service;

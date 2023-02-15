@@ -6,9 +6,9 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.repository.BookJpa;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.exception.BookNotFoundException;
+import ru.otus.spring.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ class BookServiceImplTest {
     public static final long NOT_EXISTING_BOOK_ID = 6L;
 
     @Mock
-    BookJpa bookJpa;
+    BookRepository bookRepository;
     @Mock
     AuthorService authorService;
     @Mock
@@ -53,7 +53,7 @@ class BookServiceImplTest {
 
     @Test
     void saveBookTest() {
-        when(bookJpa.save(any()))
+        when(bookRepository.save(any()))
                 .thenReturn(getAnyBook(NEW_BOOK_ID));
         when(authorService.getOrSaveByName(AUTHOR_NAME))
                 .thenReturn(new Author(AUTHOR_ID, AUTHOR_NAME));
@@ -68,14 +68,14 @@ class BookServiceImplTest {
     @Test
     void deleteByIdTest() {
         service.deleteById(DELETE_BOOK_ID);
-        verify(bookJpa, times(1)).deleteById(DELETE_BOOK_ID);
+        verify(bookRepository, times(1)).deleteById(DELETE_BOOK_ID);
     }
 
     @Test
     void getByIdExistingBookIdTest() {
         Book expectedBook = getAnyBook(EXISTING_BOOK_ID);
 
-        when(bookJpa.findById(EXISTING_BOOK_ID))
+        when(bookRepository.findById(EXISTING_BOOK_ID))
                 .thenReturn(Optional.of(expectedBook));
 
         Book actualBook = service.findById(EXISTING_BOOK_ID);
@@ -95,7 +95,7 @@ class BookServiceImplTest {
 
         bookList.add(getAnyBook(EXISTING_BOOK_ID));
 
-        when(bookJpa.findAll())
+        when(bookRepository.findAll())
                 .thenReturn(bookList);
 
         Book expectedBook = getAnyBook(EXISTING_BOOK_ID);

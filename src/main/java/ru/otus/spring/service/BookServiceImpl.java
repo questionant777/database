@@ -2,7 +2,7 @@ package ru.otus.spring.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.repository.BookJpa;
+import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -14,12 +14,12 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final BookJpa bookJpa;
+    private final BookRepository bookRepository;
     private final AuthorService authorService;
     private final GenreService genreService;
 
-    public BookServiceImpl(BookJpa bookJpa, AuthorService authorService, GenreService genreService) {
-        this.bookJpa = bookJpa;
+    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService, GenreService genreService) {
+        this.bookRepository = bookRepository;
         this.authorService = authorService;
         this.genreService = genreService;
     }
@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
         Author author = authorService.getOrSaveByName(authorName);
         Genre genre = genreService.getOrSaveByName(genreName);
 
-        Book savedBook = bookJpa.save(Book.builder()
+        Book savedBook = bookRepository.save(Book.builder()
                 .name(bookName)
                 .author(author)
                 .genre(genre)
@@ -41,12 +41,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(Long bookId) {
-        bookJpa.deleteById(bookId);
+        bookRepository.deleteById(bookId);
     }
 
     @Override
     public Book findById(Long bookId) {
-        Optional<Book> bookOpt = bookJpa.findById(bookId);
+        Optional<Book> bookOpt = bookRepository.findById(bookId);
         if (bookOpt.isPresent())
             return bookOpt.get();
         else
@@ -55,16 +55,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findByName(String bookName) {
-        Optional<Book> bookOpt = bookJpa.findByName(bookName);
+        Optional<Book> bookOpt = bookRepository.findByName(bookName);
         if (bookOpt.isPresent())
             return bookOpt.get();
         else
             throw new BookNotFoundException(bookName);
     }
 
-    @Transactional
     @Override
     public List<Book> findAll() {
-        return bookJpa.findAll();
+        return bookRepository.findAll();
     }
 }

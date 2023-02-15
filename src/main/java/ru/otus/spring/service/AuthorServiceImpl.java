@@ -2,22 +2,22 @@ package ru.otus.spring.service;
 
 import org.springframework.stereotype.Service;
 import ru.otus.spring.domain.Author;
-import ru.otus.spring.repository.AuthorJpa;
+import ru.otus.spring.repository.AuthorRepository;
 
 import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
-    private final AuthorJpa authorJpa;
+    private final AuthorRepository authorRepository;
 
-    public AuthorServiceImpl(AuthorJpa authorJpa) {
-        this.authorJpa = authorJpa;
+    public AuthorServiceImpl(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
     }
 
     @Override
     public Author getOrSaveByName(String name) {
-        Optional<Author> authorOpt = authorJpa.findByName(name);
-        return authorOpt.orElseGet(() -> authorJpa.save(Author.builder().name(name).build()));
+        Optional<Author> authorOpt = authorRepository.findByName(name);
+        return authorOpt.orElseGet(() -> authorRepository.save(Author.builder().name(name).build()));
     }
 }

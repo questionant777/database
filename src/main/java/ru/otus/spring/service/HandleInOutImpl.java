@@ -24,7 +24,7 @@ public class HandleInOutImpl implements HandleInOut {
         System.out.print(s);
     }
 
-    public void outAndCr(String s){
+    public void outAndVk(String s){
         System.out.println(s);
     }
 }

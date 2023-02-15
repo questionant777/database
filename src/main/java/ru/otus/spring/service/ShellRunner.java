@@ -37,7 +37,7 @@ public class ShellRunner {
         String genreName = handleInOut.in();
 
         Book savedBook = bookService.save(bookName, authorName, genreName);
-        handleInOut.outAndCr("Добавлена книга: " + savedBook.toString());
+        handleInOut.outAndVk("Добавлена книга: " + savedBook.toString());
     }
 
     @ShellMethod(value = "Delete book by Id", key = {"delb"})
@@ -50,10 +50,10 @@ public class ShellRunner {
         return Long.valueOf(handleInOut.in());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(value = "Get book by Id", key = {"getb"})
     public void getBookById() {
-        handleInOut.outAndCr(bookService.findById(getBookParamsFromConsole()).toString());
+        handleInOut.outAndVk(bookService.findById(getBookParamsFromConsole()).toString());
     }
 
     private Long getBookParamsFromConsole() {
@@ -61,11 +61,11 @@ public class ShellRunner {
         return Long.valueOf(handleInOut.in());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(value = "Print all book", key = {"pab", "allb"})
     public void printAllBook() {
-        handleInOut.outAndCr("Все книги бибилиотеки: ");
-        handleInOut.outAndCr(bookService.findAll()
+        handleInOut.outAndVk("Все книги бибилиотеки: ");
+        handleInOut.outAndVk(bookService.findAll()
                 .stream()
                 .map(Book::toString)
                 .collect(Collectors.joining("\n"))
@@ -88,10 +88,10 @@ public class ShellRunner {
 
         BookComment savedBookCom = bookCommentService.save(bookComment);
 
-        handleInOut.outAndCr("Добавлен комментарий: " + savedBookCom.toString());
+        handleInOut.outAndVk("Добавлен комментарий: " + savedBookCom.toString());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(value = "Print comment by book", key = {"com"})
     public void printCommentByBook() {
         handleInOut.out("Печать комментарии к книге по идентификатору: ");
