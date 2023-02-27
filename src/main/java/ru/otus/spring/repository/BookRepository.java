@@ -11,6 +11,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByName(String name);
 
+    Long countById(Long bookId);
+
     @EntityGraph(attributePaths = {"author", "genre"})
     //@Query("select b from Book b join fetch b.author join fetch b.genre")  //for inner join
     @Override

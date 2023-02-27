@@ -6,7 +6,8 @@ import ru.otus.spring.domain.BookComment;
 import java.util.List;
 
 public interface BookCommentService {
-    BookComment save(BookComment bookComment);
+    BookComment update(BookComment bookComment);
+    BookComment insert(BookComment bookComment);
     void deleteById(Long bookCommentId);
     BookComment findById(Long bookCommentId);
     List<BookComment> findByBookId(Long bookId);

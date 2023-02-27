@@ -26,17 +26,39 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public Book save(String bookName, String authorName, String genreName) {
-        Author author = authorService.getOrSaveByName(authorName);
-        Genre genre = genreService.getOrSaveByName(genreName);
+    public Book insert(Book book) {
+        if (book.getId() != null && book.getId() != 0)
+            throw new RuntimeException("При добавлении книги идентификатор должен быть пустым");
+        return save(book);
+    }
 
-        Book savedBook = bookRepository.save(Book.builder()
-                .name(bookName)
+    @Transactional
+    @Override
+    public Book update(Book book) {
+        Long bookId = book.getId();
+        Long cnt = bookRepository.countById(bookId);
+        if (cnt.equals(0L)) {
+            throw new BookNotFoundException(bookId);
+        }
+        return save(book);
+    }
+
+    private Book save(Book book) {
+        Author author = Optional.ofNullable(book.getAuthor()).orElse(new Author());
+        Genre genre = Optional.ofNullable(book.getGenre()).orElse(new Genre());
+
+        if (author.getId() == null || author.getId() == 0)
+            author = authorService.getOrSaveByName(author.getName());
+
+        if (genre.getId() == null || genre.getId() == 0)
+            genre = genreService.getOrSaveByName(genre.getName());
+
+        return bookRepository.save(Book.builder()
+                .id(book.getId())
+                .name(book.getName())
                 .author(author)
                 .genre(genre)
                 .build());
-
-        return savedBook;
     }
 
     @Override
