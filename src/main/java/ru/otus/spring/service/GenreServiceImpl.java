@@ -1,8 +1,8 @@
 package ru.otus.spring.service;
 
 import org.springframework.stereotype.Service;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.repository.GenreJpa;
+
+import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.domain.Genre;
 
 import java.util.Optional;
@@ -10,15 +10,15 @@ import java.util.Optional;
 @Service
 public class GenreServiceImpl implements GenreService {
 
-    private final GenreJpa genreJpa;
+    private final GenreRepository genreRepository;
 
-    public GenreServiceImpl(GenreJpa genreJpa) {
-        this.genreJpa = genreJpa;
+    public GenreServiceImpl(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
     }
 
     @Override
     public Genre getOrSaveByName(String name) {
-        Optional<Genre> genreOpt = genreJpa.findByName(name);
-        return genreOpt.orElseGet(() -> genreJpa.save(Genre.builder().name(name).build()));
+        Optional<Genre> genreOpt = genreRepository.findByName(name);
+        return genreOpt.orElseGet(() -> genreRepository.save(Genre.builder().name(name).build()));
     }
 }

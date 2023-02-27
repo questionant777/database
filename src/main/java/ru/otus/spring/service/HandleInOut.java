@@ -7,5 +7,5 @@ public interface HandleInOut {
 
     void out(String s);
 
-    void outAndCr(String s);
+    void outAndVk(String s);
 }

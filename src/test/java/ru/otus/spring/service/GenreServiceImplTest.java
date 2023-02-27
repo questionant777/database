@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.spring.repository.GenreJpa;
+import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.domain.Genre;
 
 import java.util.Optional;
@@ -22,8 +22,7 @@ public class GenreServiceImplTest {
     public static final String EXISTING_GENRE_NAME = "existing genre name";
 
     @Mock
-    GenreJpa genreJpa;
-
+    GenreRepository genreJpa;
     @InjectMocks
     GenreServiceImpl service;
 
