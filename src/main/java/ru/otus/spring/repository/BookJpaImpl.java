@@ -31,6 +31,16 @@ public class BookJpaImpl implements BookJpa {
     }
 
     @Override
+    public long countById(long id) {
+        TypedQuery<Long> query = em.createQuery("select count(b) " +
+                        "from Book b " +
+                        "where b.id = :id",
+                Long.class);
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    @Override
     public Optional<Book> findByName(String name) {
         TypedQuery<Book> query = em.createQuery("select b " +
                         "from Book b " +
@@ -53,6 +63,12 @@ public class BookJpaImpl implements BookJpa {
     @Override
     public void deleteById(long id) {
         Query query = em.createQuery("delete " +
+                "from BookComment b " +
+                "where b.book = :book");
+        query.setParameter("book", Book.builder().id(id).build());
+        query.executeUpdate();
+
+        query = em.createQuery("delete " +
                 "from Book b " +
                 "where b.id = :id");
         query.setParameter("id", id);

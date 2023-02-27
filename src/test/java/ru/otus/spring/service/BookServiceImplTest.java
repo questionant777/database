@@ -52,17 +52,20 @@ class BookServiceImplTest {
     }
 
     @Test
-    void saveBookTest() {
+    void insertBookTest() {
         when(bookJpa.save(any()))
                 .thenReturn(getAnyBook(NEW_BOOK_ID));
         when(authorService.getOrSaveByName(AUTHOR_NAME))
                 .thenReturn(new Author(AUTHOR_ID, AUTHOR_NAME));
 
-        Book newBook = getAnyBook(NEW_BOOK_ID);
+        Book newBook = getAnyBook(null);
 
-        Book afterInsBook = service.save(BOOK_NAME, AUTHOR_NAME, GENRE_NAME);
+        Book afterInsBook = service.insert(newBook);
 
-        assertThat(afterInsBook).usingRecursiveComparison().isEqualTo(newBook);
+        assertThat(afterInsBook)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(newBook);
     }
 
     @Test

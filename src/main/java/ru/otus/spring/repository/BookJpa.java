@@ -11,9 +11,12 @@ public interface BookJpa {
 
     Optional<Book> findById(long id);
 
+    long countById(long id);
+
     Optional<Book> findByName(String name);
 
     List<Book> findAll();
 
     void deleteById(long id);
+
 }

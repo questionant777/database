@@ -5,8 +5,10 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
+import ru.otus.spring.domain.Genre;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,12 @@ public class ShellRunner {
 
     @ShellMethod(value = "Insert book", key = {"ib", "insb", "insert book"})
     public void insertBook() {
+        Book book = fillBookParamsFromConsole();
+        Book savedBook = bookService.insert(book);
+        handleInOut.outAndCr("Добавлена книга: " + savedBook.toString());
+    }
+
+    private Book fillBookParamsFromConsole() {
         handleInOut.out("Наименование книги: ");
         String bookName = handleInOut.in();
 
@@ -36,9 +44,29 @@ public class ShellRunner {
         handleInOut.out("Жанр: ");
         String genreName = handleInOut.in();
 
-        Book savedBook = bookService.save(bookName, authorName, genreName);
-        handleInOut.outAndCr("Добавлена книга: " + savedBook.toString());
+        return new Book(
+                null,
+                bookName,
+                new Author(null, authorName),
+                new Genre(null, genreName),
+                null
+        );
     }
+
+    @ShellMethod(value = "Update book", key = {"updb"})
+    public void updateBook() {
+        handleInOut.out("Обновление книги по идентификатору: ");
+        Long bookid = Long.valueOf(handleInOut.in());
+
+        Book book = fillBookParamsFromConsole();
+
+        book.setId(bookid);
+
+        Book savedBook = bookService.update(book);
+
+        handleInOut.outAndCr("Обновлена книга: " + savedBook.toString());
+    }
+
 
     @ShellMethod(value = "Delete book by Id", key = {"delb"})
     public void deleteBookById() {
@@ -50,7 +78,6 @@ public class ShellRunner {
         return Long.valueOf(handleInOut.in());
     }
 
-    @Transactional
     @ShellMethod(value = "Get book by Id", key = {"getb"})
     public void getBookById() {
         handleInOut.outAndCr(bookService.findById(getBookParamsFromConsole()).toString());
@@ -61,7 +88,7 @@ public class ShellRunner {
         return Long.valueOf(handleInOut.in());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(value = "Print all book", key = {"pab", "allb"})
     public void printAllBook() {
         handleInOut.outAndCr("Все книги бибилиотеки: ");
@@ -73,9 +100,9 @@ public class ShellRunner {
     }
 
     @Transactional
-    @ShellMethod(value = "Comment book", key = {"ic", "addc"})
-    public void commentBook() {
-        handleInOut.out("Комментировать книгу по идентификатору: ");
+    @ShellMethod(value = "Insert comment book", key = {"ic", "insc"})
+    public void insertCommentBook() {
+        handleInOut.out("Добавить комментарий к книге по идентификатору: ");
         Long bookId = Long.valueOf(handleInOut.in());
 
         handleInOut.out("Комментарий: ");
@@ -86,12 +113,31 @@ public class ShellRunner {
                 .comment(comment)
                 .build();
 
-        BookComment savedBookCom = bookCommentService.save(bookComment);
+        BookComment savedBookCom = bookCommentService.insert(bookComment);
 
         handleInOut.outAndCr("Добавлен комментарий: " + savedBookCom.toString());
     }
 
     @Transactional
+    @ShellMethod(value = "Update comment book", key = {"updc"})
+    public void updateCommentBook() {
+        handleInOut.out("Обновить комментарий по идентификатору: ");
+        Long bookCommentId = Long.valueOf(handleInOut.in());
+
+        handleInOut.out("Комментарий: ");
+        String comment = handleInOut.in();
+
+        BookComment bookComment = BookComment.builder()
+                .id(bookCommentId)
+                .comment(comment)
+                .build();
+
+        BookComment savedBookCom = bookCommentService.update(bookComment);
+
+        handleInOut.outAndCr("Обновлен комментарий: " + savedBookCom.toString());
+    }
+
+    @Transactional(readOnly = true)
     @ShellMethod(value = "Print comment by book", key = {"com"})
     public void printCommentByBook() {
         handleInOut.out("Печать комментарии к книге по идентификатору: ");
@@ -100,6 +146,16 @@ public class ShellRunner {
         List<BookComment> bookCommentList = bookCommentService.findByBookId(bookId);
 
         bookCommentList.forEach(c -> handleInOut.out(c.toString()));
+    }
+
+    @ShellMethod(value = "Delete comment book", key = {"delc"})
+    public void deleteCommentBook() {
+        handleInOut.out("Удалить комментарий по идентификатору: ");
+        Long bookCommentId = Long.valueOf(handleInOut.in());
+
+        bookCommentService.deleteById(bookCommentId);
+
+        handleInOut.outAndCr("Удален комментарий: " + bookCommentId);
     }
 
 }

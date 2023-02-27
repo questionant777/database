@@ -40,19 +40,22 @@ public class BookCommentServiceImplTest {
     public static final long NOT_EXISTING_BOOK_ID = 6L;
 
     @Test
-    void saveBookCommentExistingBookTest() {
+    void insertBookCommentExistingBookTest() {
         Book existingBook = new Book(EXISTING_BOOK_ID, EXISTING_BOOK_NAME, null, null, null);
 
-        BookComment expectedBookCom = new BookComment(NEW_BOOK_COMMENT_ID, NEW_BOOK_COMMENT, existingBook);
+        BookComment expectedBookCom = new BookComment(null, NEW_BOOK_COMMENT, existingBook);
 
         when(bookCommentJpa.save(any()))
                 .thenReturn(new BookComment(NEW_BOOK_COMMENT_ID, NEW_BOOK_COMMENT, existingBook));
         when(bookService.findById(EXISTING_BOOK_ID))
                 .thenReturn(existingBook);
 
-        BookComment actualBookComment = service.save(expectedBookCom);
+        BookComment actualBookComment = service.insert(expectedBookCom);
 
-        assertThat(actualBookComment).usingRecursiveComparison().isEqualTo(expectedBookCom);
+        assertThat(actualBookComment)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expectedBookCom);
     }
 
     @Test
@@ -71,15 +74,6 @@ public class BookCommentServiceImplTest {
 
     @Test
     void findByIdExceptionNotExistingBookTest() {
-        Book existingBook = new Book(EXISTING_BOOK_ID, null, null, null, null);
-
-        BookComment expectedBookCom = new BookComment(NEW_BOOK_COMMENT_ID, NEW_BOOK_COMMENT, existingBook);
-
-        when(bookService.findById(EXISTING_BOOK_ID))
-                .thenReturn(existingBook);
-
-        service.save(expectedBookCom);
-
         assertThatCode(() -> service.findById(NOT_EXISTING_BOOK_ID))
                 .isInstanceOf(BookCommentNotFoundException.class);
     }

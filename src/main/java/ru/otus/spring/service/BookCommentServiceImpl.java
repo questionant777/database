@@ -23,7 +23,26 @@ public class BookCommentServiceImpl implements BookCommentService {
 
     @Transactional
     @Override
-    public BookComment save(BookComment bookComment) {
+    public BookComment update(BookComment bookComment) {
+        Long bookCommentId = bookComment.getId();
+
+        Optional<BookComment> foundBookCommentOpt = bookCommentJpa.findById(bookCommentId);
+
+        if (foundBookCommentOpt.isPresent()) {
+            bookComment.setBook(foundBookCommentOpt.get().getBook());
+        } else {
+            throw new BookCommentNotFoundException(bookCommentId);
+        }
+
+        return bookCommentJpa.save(bookComment);
+    }
+
+    @Transactional
+    @Override
+    public BookComment insert(BookComment bookComment) {
+        if (bookComment.getId() != null && bookComment.getId() != 0)
+            throw new RuntimeException("При добавлении комментария идентификатор должен быть пустым");
+
         Book book = Optional.ofNullable(bookComment.getBook()).orElse(new Book());
 
         Book foundBook;
@@ -39,6 +58,7 @@ public class BookCommentServiceImpl implements BookCommentService {
         return bookCommentJpa.save(bookComment);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long bookCommentId) {
         bookCommentJpa.deleteById(bookCommentId);
