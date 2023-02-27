@@ -33,6 +33,7 @@ class BookServiceImplTest {
 
     @Mock
     BookRepository bookRepository;
+
     @Mock
     AuthorService authorService;
     @Mock
@@ -60,7 +61,7 @@ class BookServiceImplTest {
 
         Book newBook = getAnyBook(null);
 
-        Book afterInsBook = service.insert(newBook);
+        Book afterInsBook = service.save(BOOK_NAME, AUTHOR_NAME, GENRE_NAME);
 
         assertThat(afterInsBook)
                 .usingRecursiveComparison()

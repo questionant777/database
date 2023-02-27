@@ -23,7 +23,6 @@ public class GenreServiceImplTest {
 
     @Mock
     GenreRepository genreJpa;
-
     @InjectMocks
     GenreServiceImpl service;
 
