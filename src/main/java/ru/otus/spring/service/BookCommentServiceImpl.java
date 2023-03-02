@@ -4,22 +4,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
+import ru.otus.spring.domain.dto.BookCommentDto;
 import ru.otus.spring.exception.BookCommentNotFoundException;
 import ru.otus.spring.repository.BookCommentRepository;
-import ru.otus.spring.repository.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookCommentServiceImpl implements BookCommentService {
 
     private final BookCommentRepository bookCommentRepository;
     private final BookService bookService;
+    private final MappingService mappingService;
 
-    public BookCommentServiceImpl(BookCommentRepository bookCommentRepository, BookService bookService) {
+    public BookCommentServiceImpl(BookCommentRepository bookCommentRepository, BookService bookService, MappingService mappingService) {
         this.bookCommentRepository = bookCommentRepository;
         this.bookService = bookService;
+        this.mappingService = mappingService;
     }
 
     @Transactional
@@ -77,6 +80,15 @@ public class BookCommentServiceImpl implements BookCommentService {
     public List<BookComment> findByBookId(Long bookId) {
         bookService.findById(bookId);
         return bookCommentRepository.findByBookId(bookId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BookCommentDto> findByBookIdInDto(Long bookId) {
+        return findAll()
+                .stream()
+                .map(mappingService::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

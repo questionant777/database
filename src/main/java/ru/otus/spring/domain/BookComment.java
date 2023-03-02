@@ -1,9 +1,7 @@
 package ru.otus.spring.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.otus.spring.domain.dto.BookCommentDto;
 
 import javax.persistence.*;
 
@@ -23,5 +21,7 @@ public class BookComment {
 
     @ManyToOne
     @JoinColumn(name="bookid", nullable=false)
+    @ToString.Exclude
     private Book book;
+
 }

@@ -1,7 +1,6 @@
 package ru.otus.spring.service;
 
 import org.springframework.stereotype.Service;
-
 import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.domain.Genre;
 
