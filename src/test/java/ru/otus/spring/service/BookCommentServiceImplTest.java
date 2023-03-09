@@ -1,14 +1,14 @@
 package ru.otus.spring.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookComment;
 import ru.otus.spring.exception.BookCommentNotFoundException;
 import ru.otus.spring.repository.BookCommentRepository;
-import ru.otus.spring.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class BookCommentServiceImplTest {
 
     @Mock
@@ -50,8 +50,6 @@ public class BookCommentServiceImplTest {
                 .thenReturn(expectedBookCom);
         when(bookCommentJpa.findById(EXISTING_BOOK_COMMENT_ID))
                 .thenReturn(Optional.of(expectedBookCom));
-        when(bookService.findById(EXISTING_BOOK_ID))
-                .thenReturn(existingBook);
 
         BookComment actualBookComment = service.update(expectedBookCom);
 

@@ -4,9 +4,6 @@ spring:
     initialization-mode: always
   profiles:
     active: test
-  shell:
-    interactive:
-      enabled: false
 
   jpa:
     generate-ddl: false
