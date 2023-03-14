@@ -10,10 +10,6 @@ spring:
 
     show-sql: true
 
-#  shell:
-#    interactive:
-#      enabled: true
-
 logging:
   level:
     ROOT: ERROR

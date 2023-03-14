@@ -5,8 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.dto.AuthorDto;
@@ -36,6 +36,9 @@ class BookControllerTest {
     public static final long GENRE_ID = 3L;
     public static final long EXISTING_BOOK_ID = 4L;
     public static final long NOT_EXISTING_BOOK_ID = 256L;
+    public static final String TEST_USER = "user";
+    public static final String TEST_USER_PWD_OK = "2";
+    public static final String TEST_USER_PWD_WRONG = "password_wrong";
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,6 +47,27 @@ class BookControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    void userOkAuthenticatedTest() throws Exception {
+        mockMvc.perform(
+                post("/login")
+                        .param("username", TEST_USER)
+                        .param("password", TEST_USER_PWD_OK))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    void userNotAuthenticatedTest() throws Exception {
+        mockMvc.perform(
+                post("/login")
+                        .param("username", TEST_USER)
+                        .param("password", TEST_USER_PWD_WRONG))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"));
+    }
+
+    @Test
+    @WithMockUser(username="user", roles={"USER"})
     void findAllInDtoTest() throws Exception {
         mockMvc.perform(
                 get("/book")
@@ -54,6 +78,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void getBookByIdInPathTest() throws Exception {
         mockMvc.perform(
                 get(String.format("/book/%d", EXISTING_BOOK_ID))
@@ -64,6 +89,7 @@ class BookControllerTest {
 
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void getBookByIdInPathNotExistingErrorTest() throws Exception {
         mockMvc.perform(
                 get(String.format("/book/%d", NOT_EXISTING_BOOK_ID))
@@ -73,6 +99,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void insertBookTest() throws Exception {
         BookDto bookDto = getAnyBookDto(null);
         bookDto.setName(NEW_BOOK_NAME);
@@ -90,6 +117,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void updateBookExistingTest() throws Exception {
         BookDto bookDto = getAnyBookDto(EXISTING_BOOK_ID);
         bookDto.setName(NEW_BOOK_NAME);
@@ -113,6 +141,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void updateBookNotExistingErrorTest() throws Exception {
         BookDto bookDto = getAnyBookDto(NOT_EXISTING_BOOK_ID);
 
@@ -129,6 +158,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void deleteBookExistingTest() throws Exception {
         mockMvc.perform(
                 delete(String.format("/book/%d", EXISTING_BOOK_ID))
@@ -138,6 +168,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser(username="user", roles={"USER"})
     void deleteBookNotExistingErrorTest() throws Exception {
         mockMvc.perform(
                 delete(String.format("/book/%d", NOT_EXISTING_BOOK_ID))

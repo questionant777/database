@@ -1,9 +1,10 @@
 package ru.otus.spring.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.domain.Author;
 
@@ -13,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class AuthorServiceImplTest {
 
     public static final long NEW_AUTHOR_ID = 1L;
