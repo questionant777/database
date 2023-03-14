@@ -1,6 +1,5 @@
 package ru.otus.spring.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,9 +19,10 @@ public class Bootstrap implements ApplicationListener<ApplicationReadyEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        System.out.println("!!! create default users: admin, user ");
+        System.out.println("!!! create default users: admin, user1, user2 ");
         createUserWithRole("admin", "password", Role.ADMIN);
-        createUserWithRole("user", "2", Role.USER);
+        createUserWithRole("user1", "1", Role.USER);
+        createUserWithRole("user2", "2", Role.NO_RIGHT);
     }
 
     private void createUserWithRole(String username, String password, Role authority){
