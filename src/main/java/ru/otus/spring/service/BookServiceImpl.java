@@ -1,5 +1,6 @@
 package ru.otus.spring.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.dto.AuthorDto;
@@ -29,6 +30,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('USER')")
     @Override
     public BookDto insert(BookDto bookDto) {
         if (bookDto.getId() != null && bookDto.getId() != 0)
@@ -37,6 +39,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('USER')")
     @Override
     public BookDto update(BookDto bookDto) {
         Long bookId = bookDto.getId();
@@ -103,6 +106,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAllInDto() {

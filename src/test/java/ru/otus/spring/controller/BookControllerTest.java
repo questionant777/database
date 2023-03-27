@@ -36,9 +36,6 @@ class BookControllerTest {
     public static final long GENRE_ID = 3L;
     public static final long EXISTING_BOOK_ID = 4L;
     public static final long NOT_EXISTING_BOOK_ID = 256L;
-    public static final String TEST_USER = "user";
-    public static final String TEST_USER_PWD_OK = "2";
-    public static final String TEST_USER_PWD_WRONG = "password_wrong";
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,23 +44,13 @@ class BookControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void userOkAuthenticatedTest() throws Exception {
+    @WithMockUser(username="user", roles={"NO_RIGHT"})
+    void findAllInDtoAccessDeniedExceptionTest() throws Exception {
         mockMvc.perform(
-                post("/login")
-                        .param("username", TEST_USER)
-                        .param("password", TEST_USER_PWD_OK))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
-    }
-
-    @Test
-    void userNotAuthenticatedTest() throws Exception {
-        mockMvc.perform(
-                post("/login")
-                        .param("username", TEST_USER)
-                        .param("password", TEST_USER_PWD_WRONG))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+                get("/book")
+        )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("AccessDeniedException"));
     }
 
     @Test

@@ -10,7 +10,14 @@ spring:
 
     show-sql: true
 
+jwt:
+  secret: secret123
+
 logging:
   level:
     ROOT: ERROR
+
+# для логирования параметров
+#logging.level.org.hibernate.SQL: DEBUG
+#logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
